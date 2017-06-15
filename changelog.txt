@@ -1,0 +1,13 @@
+Changelog of Tree
+Author: Daniil Y
+
+version 1:
+- class Tree
+- class Node
+- generic
+- javadoc
+
+Release of class Tree. There are implemented basic methods such as 'add', 'get'
+and 'delete'. Methods' search is done by inner method 'find'. Structure uses
+inner class Node, representing a node in a tree with an object. Exceptions are
+unsupported.
