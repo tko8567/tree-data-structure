@@ -1,6 +1,27 @@
 Changelog of Tree
 Author: Daniil Y
 
+version 2:
+- additional interface
+    Tree#getRoot()
+    Tree#changeValue(E value, int... index)
+    Node#isLeaf()
+    Node#isRoot()
+    Node#getRoot()
+    Node#getSiblings()
+    Node#getChildren()
+
+- reset of access modifiers
+    Node is public
+    Node 'get' methods are mostly public
+    Node 'set' methods are private
+    Node constructors are private
+
+- deleted methods
+    Node constructors with 'parent'
+    Tree iterator (which was a mistake of version 1) will be included in future
+    versions
+
 version 1:
 - class Tree
 - class Node

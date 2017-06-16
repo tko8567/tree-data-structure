@@ -1,7 +1,6 @@
 package com.daniily.util;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Class which implements tree data-structure.
@@ -54,19 +53,6 @@ public class Tree<E> {
 	/** Root element */
 	private Node<E> root;
 
-	/** java.util.Iterator */
-	Iterator<E> iterator = new Iterator<E>() {
-		@Override
-		public boolean hasNext() {
-			return false;
-		}
-
-		@Override
-		public E next() {
-			return null;
-		}
-	};
-
 	/** Constructor form null object */
 	public Tree() {
 		root = new Node<>();
@@ -77,10 +63,14 @@ public class Tree<E> {
 		root = new Node<>(value);
 	}
 
+	/** Returns a root node */
+	public Node<E> getRoot() {
+		return root;
+	}
+
 	/** Method for getting object of root */
 	public E get() {
 		return root.getValue();
-
 	}
 
 	/** Method from getting object of indexed node */
@@ -104,13 +94,21 @@ public class Tree<E> {
 				.removeChild(index[index[index.length - 1]]);
 	}
 
+	/**
+	 * Changes the value of indexed node
+	 * @param value a value to be written in node
+	 * @param index index of node
+	 */
+	public void changeValue(E value, int... index) {
+		find(index, 0, root).putValue(value);
+	}
+
 	/** Inner  method for searching for a Node. Call find(index, 0, root) */
 	private Node<E> find(int[] index, int current, Node<E> node) {
 		if (current == index.length) return node;
-		return find(index, current + 1, node.getChildren(index[current]));
+		return find(index, current + 1, node.getChild(index[current]));
 	}
 
-	// TODO: isLeaf(), getParent(), getSiblings(), getRoot()
 	// TODO: steady against exceptions -> return boolean/null or throw exception?
 	// TODO: getPath(int... index)
 	// TODO: clone()
@@ -125,41 +123,35 @@ public class Tree<E> {
 	 * is 'root', children of the same node are 'siblings'.
 	 * @param <E> - class to use
 	 */
-	private class Node<E> {
+	public class Node<E> {
 
 		/** List of children */
 		private ArrayList<Node<E>> children;
+
 		/** Stored value */
 		private E value;
+
 		/** Parent node */
 		private Node<E> parent;
+
 		/** Creates an empty node */
 		Node() {
 			children = new ArrayList<>();
 		}
 
 		/** Creates a node with given object */
-		Node(E value) {
+		private Node(E value) {
 			this();
 			this.value = value;
 		}
 
-		Node(Node<E> parent) {
-			this.parent = parent;
-		}
-
-		Node(E value, Node<E> parent) {
-			this(parent);
-			this.value = value;
-		}
-
 		/** Changes its value to given */
-		void putValue(E e) {
+		private void putValue(E e) {
 			value = e;
 		}
 
 		/** Returns its value */
-		E getValue() {
+		public E getValue() {
 			return value;
 		}
 
@@ -170,25 +162,83 @@ public class Tree<E> {
 		}
 
 		/** Returns a child with given index */
-		Node<E> getChildren(int index) {
+		public Node<E> getChild(int index) {
 			return children.get(index);
 		}
 
 		/** Removes child with all the children below */
-		void removeChild(int index) {
+		private void removeChild(int index) {
 			children.remove(index);
 		}
 
 		/** Returns parent node */
-		Node<E> getParent() {
+		public Node<E> getParent() {
 			return parent;
 		}
 
 		/** Sets parent node */
-		void setParent(Node<E> parent) {
+		private void setParent(Node<E> parent) {
 			this.parent = parent;
 		}
 
-	}
+		/**
+		 * Check whether node is a leaf. 'Leaf' means node has no children
+		 * @return true if leaf
+		 */
+		public boolean isLeaf() {
+			return children.size() == 0;
+		}
 
+		/**
+		 * Check whether node is a root. 'Root' means node has no parent
+		 * @return true if root
+		 */
+		public boolean isRoot() {
+			return parent == null;
+		}
+
+		/**
+		 * Returns node's root. Technically, it goes up to tree while next node
+		 * is not root.
+		 * @return Node, root of tree, where this node is
+		 */
+		public Node<E> getRoot() {
+			return getRoot(this);
+		}
+
+		/**
+		 * Inner method for finding root recursively.
+		 * @param node current node
+		 * @return parent node or root
+		 */
+		private Node<E> getRoot(Node<E> node) {
+			if (node.isRoot()) return node;
+			return getRoot(node.getParent());
+		}
+
+		/**
+		 * Returns all the siblings including this node as
+		 * ArrayList&lt;Node&lt;E&gt;&gt;
+		 * @return ArrayList of siblings
+		 */
+		public ArrayList<Node<E>> getSiblings() {
+			if (this.isRoot()) {
+				ArrayList<Node<E>> siblings = new ArrayList<>();
+				siblings.add(this);
+				return siblings;
+			}
+			return this.getParent().getChildren();
+		}
+
+		/**
+		 * Returns ArrayList&lt;Node&lt;E&gt;&gt; with all the children if node
+		 * is not a leaf, null otherwise
+		 * @return ArrayList of child nodes
+		 */
+		public ArrayList<Node<E>> getChildren() {
+			if (!this.isLeaf())
+				return children;
+			return null;
+		}
+	}
 }

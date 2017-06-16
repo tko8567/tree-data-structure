@@ -1,6 +1,6 @@
 class Tree
 author DaniilY
-actualVersion 1
+actualVersion 2
 changelog changelog.txt
 
 Class Tree allows to use tree data-structure. How-to-use documentation is
